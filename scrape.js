@@ -11,20 +11,10 @@ import fs from "fs";
 
 const scrapeData = {
 
-    async scraping( page, page_current ) {
+    async scraping( page, items_loaded ) {
         var allScrapedData = [];
 
-        // const allItemsX = "//div[ @role = 'main']//tr/td[5]";
-		var allItemsX = "//div[.='Inbox'] //ancestor::td[1]";
-        try{
-            await page.waitForXPath( allItemsX, {timeout:360000} ); // up to 6 min
-        }
-        catch( err ){
-            return err.message; // 
-        }
 
-        var allItems = await page.$x( allItemsX );
-        var items_loaded = await page.evaluate(allItems => allItems.length, allItems );
         // var items_loaded = await page.$$eval(all_items_selector, (items) => items.length);   // the number or items loaded after a click
         // items_loaded = items_loaded - 3;
         var total_items_loaded = items_loaded;   // await page.$$eval(all_items_selector, (items) => items.length);   // the number or items loaded variable of the total number of items currenly present
@@ -103,7 +93,6 @@ console.log(total_items_loaded);
                 }
                 if (nextButtonExist) {
                     try{
-
                         // scrool
                         const elems = await page.$x( nextPageButtonX );
                         // await page.evaluate( button => button.click(), elem[0] );
@@ -184,7 +173,6 @@ console.log('total_items_loaded: ' + total_items_loaded );
                     itemIndices['lastItemIndice'] = total_items_loaded - 1;
 
                         // The new last indice
-
             }
 
 // to here ////
@@ -194,34 +182,36 @@ console.log('total_items_loaded: ' + total_items_loaded );
                 var dataObj = {};
 
 				// get a mail's data
-				allItemsX = "//div[ @role = 'main']//tr/td[5]"; // diffenrent from the declarative one
+				
                 return new Promise( async (resolve, reject) => {
                     
-					// wait all Inbox buttons be displayed
-					try{
-						await page.waitForXPath( allItemsX, {timeout:360000} ); // up to 6 min
+					var clickAMailRetry = 0;
+					const clickAMailMaxRetry = 3;
+					const clickAMail = async() => {
+						try{
+							// wait all Inbox buttons be displayed
+							const allItemsX = "//div[ @role = 'main']//tr/td[5]"; // diffenrent from the declarative one
+							await page.waitForXPath( allItemsX, {timeout:360000} ); // up to 6 min
+							const pupupItems = await page.$x( allItemsX );
+							const pupupItem  = await pupupItems[ itemIndice ];
+						
+							// click to open the mail
+							await pupupItem.hover();								
+							await pupupItem.click();
+						}
+						catch( err ){
+							if( clickAMailRetry <= 3 ){
+console.log( 'clickAMail retry n° ' + clickAMailRetry + '/' + clickAMailMaxRetry );
+								await clickAMail();
+							}
+							else{
+								reject( dataObj ); // 
+							}
+							clickAMailRetry++;
+						}
 					}
-					catch( err ){
-	console.log( 'Error: Wait all Inbox buttons be displayed: ' + err.message );
-						return allScrapedData; // 
-					}
+					await clickAMail();
 					
-                    // click to open the mail
-                    try {
-						await new Promise(r => setTimeout(r, 10000));	// To prevent The document has mutate error
-// await page.screenshot({ path: 'screenshotList.png', fullPage: true });
-                        const pupupItems = await page.$x( allItemsX );
-                        const pupupItem  = await pupupItems[ itemIndice ];
-
-                        await pupupItem.hover();
-                        await pupupItem.click();
-						// await page.evaluate( btn => btn.click(), pupupItem );
-console.log('-> Item clicked');
-                    }
-                    catch( err ){
-                        console.log( '! Error: Item card error: ' + err );
-                        await reject( dataObj );
-                    }
 					
 					// Mail sender's name
                     const mailSenderNameX = "//div[1]/div[2]/div[1]/table/tbody/tr[1]/td[1]/table/tbody/tr/td/h3/span[1]/span[1]/span";
