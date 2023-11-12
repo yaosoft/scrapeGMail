@@ -233,7 +233,7 @@ console.log( 'clickAMail retry n° ' + clickAMailRetry + '/' + clickAMailMaxRetr
 							clickAMailRetry++;
 						}
 					}
-					clickAMail();
+					await clickAMail();
 					
 					
 					// Mail sender's name
