@@ -200,28 +200,22 @@ console.log('total_items_loaded: ' + total_items_loaded );
 					// wait all Inbox buttons be displayed
 					try{
 						await page.waitForXPath( allItemsX, {timeout:360000} ); // up to 6 min
+						const pupupItems = await page.$x( allItemsX );
+                        const pupupItem  = await pupupItems[ itemIndice ];
+						
+						// click to open the mail
+                        await pupupItem.hover();								
+                        await pupupItem.click();
 					}
 					catch( err ){
 	console.log( 'Error: Wait all Inbox buttons be displayed: ' + err.message );
 						return allScrapedData; // 
+						console.log( '! Error: Item card error: ' + err );
+						await reject( dataObj );
 					}
 					
-                    // click to open the mail
-                    try {
-						await new Promise(r => setTimeout(r, 10000));	// To prevent The document has mutate error
-// await page.screenshot({ path: 'screenshotList.png', fullPage: true });
-                        const pupupItems = await page.$x( allItemsX );
-                        const pupupItem  = await pupupItems[ itemIndice ];
+                    
 
-                        await pupupItem.hover();
-                        await pupupItem.click();
-						// await page.evaluate( btn => btn.click(), pupupItem );
-console.log('-> Item clicked');
-                    }
-                    catch( err ){
-                        console.log( '! Error: Item card error: ' + err );
-                        await reject( dataObj );
-                    }
 					
 					// Mail sender's name
                     const mailSenderNameX = "//div[1]/div[2]/div[1]/table/tbody/tr[1]/td[1]/table/tbody/tr/td/h3/span[1]/span[1]/span";
