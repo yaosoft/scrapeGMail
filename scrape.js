@@ -16,8 +16,8 @@ const scrapeData = {
 
         // const allItemsX = "//div[ @role = 'main']//tr/td[5]";
 		const allItemsX = "//div[.='Inbox'] //ancestor::td[1]";
-		const countCountLoadedDataRetry = 0;
 		var items_loaded = 0;
+		var countCountLoadedDataRetry = 0;
 		const countCountLoadedDataMaxRetry = 3; 
 		const countLoadedData = async() => {
 			try{
