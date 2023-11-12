@@ -14,7 +14,8 @@ const scrapeData = {
     async scraping( page, page_current ) {
         var allScrapedData = [];
 
-        const allItemsX = "//div[ @role = 'main']//tr/td[5]";
+        // const allItemsX = "//div[ @role = 'main']//tr/td[5]";
+		const allItemsX = "//div[.='Inbox'] //ancestor::td[1]";
         try{
             await page.waitForXPath( allItemsX, {timeout:360000} ); // up to 6 min
         }
@@ -194,6 +195,7 @@ console.log('total_items_loaded: ' + total_items_loaded );
                 var dataObj = {};
 
 				// get a mail's data
+				allItemsX = "//div[ @role = 'main']//tr/td[5]"; // diffenrent from the declarative one
                 return new Promise( async (resolve, reject) => {
                     
 					// wait all Inbox buttons be displayed
