@@ -139,7 +139,7 @@ console.log('> Next page clicked: ' )
 
                 await page.waitForXPath( allItemsX, {timeout:120000} );
                 
-                allItems = await page.$x(allItemsX);
+                const allItems = await page.$x(allItemsX);
                 total_items_loaded = await page.evaluate(allItems => allItems.length, allItems);
 				
 //	total_items_loaded
