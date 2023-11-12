@@ -198,6 +198,7 @@ console.log('total_items_loaded: ' + total_items_loaded );
                 return new Promise( async (resolve, reject) => {
                     
 					var clickAMailRetry = 0;
+					const clickAMailMaxRetry = 3;
 					const clickAMail = async() => {
 						try{
 							// wait all Inbox buttons be displayed
@@ -209,18 +210,20 @@ console.log('total_items_loaded: ' + total_items_loaded );
 							// click to open the mail
 							await pupupItem.hover();								
 							await pupupItem.click();
-							return true;
 						}
 						catch( err ){
-	console.log( 'clickAMail retry n° ' + clickAMailRetry );
+							if( clickAMailRetry <= 3 ){
+								console.log( 'clickAMail retry n° ' + clickAMailRetry + '/' + clickAMailMaxRetry );
+								await clickAMail();
+							}
+							else{
+								reject( dataObj ); // 
+							}
 							clickAMailRetry++;
-							return false; // 
 						}
 					}
 					// Retry
-					while( clickAMailRetry <= 3){
-						await clickAMail();
-					}
+					
 					
 					// Mail sender's name
                     const mailSenderNameX = "//div[1]/div[2]/div[1]/table/tbody/tr[1]/td[1]/table/tbody/tr/td/h3/span[1]/span[1]/span";
