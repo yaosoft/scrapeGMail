@@ -15,16 +15,29 @@ const scrapeData = {
         var allScrapedData = [];
 
         // const allItemsX = "//div[ @role = 'main']//tr/td[5]";
-		var allItemsX = "//div[.='Inbox'] //ancestor::td[1]";
-        try{
-            await page.waitForXPath( allItemsX, {timeout:360000} ); // up to 6 min
-        }
-        catch( err ){
-            return err.message; // 
-        }
+		const allItemsX = "//div[.='Inbox'] //ancestor::td[1]";
+		const countCountLoadedDataRetry = 0;
+		var items_loaded = 0;
+		const countCountLoadedDataMaxRetry = 3; 
+		const countLoadedData = async() => {
+			try{
+				await page.waitForXPath( allItemsX, {timeout:360000} ); // up to 6 min
+				var allItems = await page.$x( allItemsX );
+				items_loaded = await page.evaluate(allItems => allItems.length, allItems );
+			}
+			catch( err ){
+				if( countLoadedDataRetry <= countCountLoadedDataMaxRetry ){ // retry
+console.log( 'countLoadedData retry n° ' + countLoadedDataRetry + '/' + countCountLoadedDataMaxRetry );
+					countCountLoadedDataRetry++;
+					await countLoadedData();
+				}
+				
+				countLoadedData ++;
+			}
+		}
+		await countLoadedData();			
+		
 
-        var allItems = await page.$x( allItemsX );
-        var items_loaded = await page.evaluate(allItems => allItems.length, allItems );
         // var items_loaded = await page.$$eval(all_items_selector, (items) => items.length);   // the number or items loaded after a click
         // items_loaded = items_loaded - 3;
         var total_items_loaded = items_loaded;   // await page.$$eval(all_items_selector, (items) => items.length);   // the number or items loaded variable of the total number of items currenly present
@@ -103,7 +116,6 @@ console.log(total_items_loaded);
                 }
                 if (nextButtonExist) {
                     try{
-
                         // scrool
                         const elems = await page.$x( nextPageButtonX );
                         // await page.evaluate( button => button.click(), elem[0] );
@@ -184,7 +196,6 @@ console.log('total_items_loaded: ' + total_items_loaded );
                     itemIndices['lastItemIndice'] = total_items_loaded - 1;
 
                         // The new last indice
-
             }
 
 // to here ////
@@ -213,7 +224,7 @@ console.log('total_items_loaded: ' + total_items_loaded );
 						}
 						catch( err ){
 							if( clickAMailRetry <= 3 ){
-								console.log( 'clickAMail retry n° ' + clickAMailRetry + '/' + clickAMailMaxRetry );
+console.log( 'clickAMail retry n° ' + clickAMailRetry + '/' + clickAMailMaxRetry );
 								await clickAMail();
 							}
 							else{
@@ -222,7 +233,7 @@ console.log('total_items_loaded: ' + total_items_loaded );
 							clickAMailRetry++;
 						}
 					}
-					// Retry
+					clickAMail();
 					
 					
 					// Mail sender's name
