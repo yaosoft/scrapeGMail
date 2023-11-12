@@ -122,7 +122,7 @@ console.log( 'countLoadedData retry n° ' + countCountLoadedDataRetry + '/' + co
 				await countLoadedData();
 			}
 				
-			countLoadedData ++;
+			countCountLoadedDataRetry ++;
 		}
 	}
 	await countLoadedData();
