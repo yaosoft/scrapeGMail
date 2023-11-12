@@ -26,8 +26,8 @@ const scrapeData = {
 				items_loaded = await page.evaluate(allItems => allItems.length, allItems );
 			}
 			catch( err ){
-				if( countLoadedDataRetry <= countCountLoadedDataMaxRetry ){ // retry
-console.log( 'countLoadedData retry n° ' + countLoadedDataRetry + '/' + countCountLoadedDataMaxRetry );
+				if( countCountLoadedDataRetry <= countCountLoadedDataMaxRetry ){ // retry
+console.log( 'countLoadedData retry n° ' + countCountLoadedDataRetry + '/' + countCountLoadedDataMaxRetry );
 					countCountLoadedDataRetry++;
 					await countLoadedData();
 				}

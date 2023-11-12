@@ -102,6 +102,7 @@ console.log( 'More btn clicked' );
 	const elts04 = await page.$x( allMailX );
 	await elts04[0].hover();
     await elts04[0].click();
+	await new Promise(r => setTimeout(r, 5000)); // loading left zone items
 	//await page.evaluate( btn => btn.click(), elts04[0] );
 console.log( 'All Mail btn clicked' );
 }
