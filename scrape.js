@@ -129,6 +129,8 @@ console.log('> Next page clicked: ' )
             }
 // Don't change here
 // console.log('comparator: ' + comparator + ', startSkiping: ' + startSkiping + ', page_first: ' + page_first + ', page_current: ' + page_current)
+			// const allItemsX = "//div[.='Inbox'] //ancestor::td[1]";
+			const allItemsX = "//div[.='Inbox'] //ancestor::td[1]";
             for (var j = startSkiping; j < comparator; j++) { // click loop
                 
                 const next = await clickNext(); 
