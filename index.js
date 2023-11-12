@@ -88,6 +88,7 @@ catch(e){
 // Click to List all messages
 const moreBtnX = "//span[contains( @role, 'button' )]/span[ contains( .,'More' )]/..";
 const allMailX = "//a[contains(., 'All Mail' )]";
+var items_loaded 	= 0;
 try{
 	// click More btn
 	await page.waitForXPath( moreBtnX, {timeout:300000} );
@@ -102,9 +103,30 @@ console.log( 'More btn clicked' );
 	const elts04 = await page.$x( allMailX );
 	await elts04[0].hover();
     await elts04[0].click();
-	await new Promise(r => setTimeout(r, 5000)); // loading left zone items
-	//await page.evaluate( btn => btn.click(), elts04[0] );
-console.log( 'All Mail btn clicked' );
+console.log( 'All Mail btn clicked. Loading data... ' );
+	
+	// load data
+	const allItemsX 	= "//div[.='Inbox'] //ancestor::td[1]";
+	var countCountLoadedDataRetry 		= 0;
+	const countCountLoadedDataMaxRetry 	= 3; 
+	const countLoadedData = async() => {
+		try{
+			await page.waitForXPath( allItemsX, {timeout:360000} ); // up to 6 min
+			var allItems = await page.$x( allItemsX );
+			items_loaded = await page.evaluate(allItems => allItems.length, allItems );
+		}
+		catch( err ){
+			if( countCountLoadedDataRetry <= countCountLoadedDataMaxRetry ){ // retry
+console.log( 'countLoadedData retry n° ' + countCountLoadedDataRetry + '/' + countCountLoadedDataMaxRetry );
+				countCountLoadedDataRetry++;
+				await countLoadedData();
+			}
+				
+			countLoadedData ++;
+		}
+	}
+	await countLoadedData();
+	//
 }
 catch(e){
 	console.log( 'Click More btn error: ' + e.message );
@@ -113,7 +135,7 @@ catch(e){
 // Scrape 
 // const subject  = 'Stockholm Photography';
 // const location = 'Stockholm';
-await scrapeData.scraping( page );
+await scrapeData.scraping( page, items_loaded );
 
 // save file
 async function save_file( path, data ) {

@@ -11,32 +11,9 @@ import fs from "fs";
 
 const scrapeData = {
 
-    async scraping( page, page_current ) {
+    async scraping( page, items_loaded ) {
         var allScrapedData = [];
 
-        // const allItemsX = "//div[ @role = 'main']//tr/td[5]";
-		const allItemsX = "//div[.='Inbox'] //ancestor::td[1]";
-		var items_loaded = 0;
-		var countCountLoadedDataRetry = 0;
-		const countCountLoadedDataMaxRetry = 3; 
-		const countLoadedData = async() => {
-			try{
-				await page.waitForXPath( allItemsX, {timeout:360000} ); // up to 6 min
-				var allItems = await page.$x( allItemsX );
-				items_loaded = await page.evaluate(allItems => allItems.length, allItems );
-			}
-			catch( err ){
-				if( countCountLoadedDataRetry <= countCountLoadedDataMaxRetry ){ // retry
-console.log( 'countLoadedData retry n° ' + countCountLoadedDataRetry + '/' + countCountLoadedDataMaxRetry );
-					countCountLoadedDataRetry++;
-					await countLoadedData();
-				}
-				
-				countLoadedData ++;
-			}
-		}
-		await countLoadedData();			
-		
 
         // var items_loaded = await page.$$eval(all_items_selector, (items) => items.length);   // the number or items loaded after a click
         // items_loaded = items_loaded - 3;
