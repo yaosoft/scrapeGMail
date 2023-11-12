@@ -194,28 +194,33 @@ console.log('total_items_loaded: ' + total_items_loaded );
                 var dataObj = {};
 
 				// get a mail's data
-				allItemsX = "//div[ @role = 'main']//tr/td[5]"; // diffenrent from the declarative one
+				
                 return new Promise( async (resolve, reject) => {
                     
-					// wait all Inbox buttons be displayed
-					try{
-						await page.waitForXPath( allItemsX, {timeout:360000} ); // up to 6 min
-						const pupupItems = await page.$x( allItemsX );
-                        const pupupItem  = await pupupItems[ itemIndice ];
+					var clickAMailRetry = 0;
+					const clickAMail = async() => {
+						try{
+							// wait all Inbox buttons be displayed
+							const allItemsX = "//div[ @role = 'main']//tr/td[5]"; // diffenrent from the declarative one
+							await page.waitForXPath( allItemsX, {timeout:360000} ); // up to 6 min
+							const pupupItems = await page.$x( allItemsX );
+							const pupupItem  = await pupupItems[ itemIndice ];
 						
-						// click to open the mail
-                        await pupupItem.hover();								
-                        await pupupItem.click();
+							// click to open the mail
+							await pupupItem.hover();								
+							await pupupItem.click();
+							return true;
+						}
+						catch( err ){
+	console.log( 'clickAMail retry n° ' + clickAMailRetry );
+							clickAMailRetry++;
+							return false; // 
+						}
 					}
-					catch( err ){
-	console.log( 'Error: Wait all Inbox buttons be displayed: ' + err.message );
-						return allScrapedData; // 
-						console.log( '! Error: Item card error: ' + err );
-						await reject( dataObj );
+					// Retry
+					while( clickAMailRetry <= 3){
+						await clickAMail();
 					}
-					
-                    
-
 					
 					// Mail sender's name
                     const mailSenderNameX = "//div[1]/div[2]/div[1]/table/tbody/tr[1]/td[1]/table/tbody/tr/td/h3/span[1]/span[1]/span";
