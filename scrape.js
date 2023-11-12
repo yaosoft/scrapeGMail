@@ -14,7 +14,8 @@ const scrapeData = {
     async scraping( page, page_current ) {
         var allScrapedData = [];
 
-        const allItemsX = "//div[ @role = 'main']//tr/td[5]";
+        // const allItemsX = "//div[ @role = 'main']//tr/td[5]";
+		var allItemsX = "//div[.='Inbox'] //ancestor::td[1]";
         try{
             await page.waitForXPath( allItemsX, {timeout:360000} ); // up to 6 min
         }
@@ -22,20 +23,19 @@ const scrapeData = {
             return err.message; // 
         }
 
-     
         var allItems = await page.$x( allItemsX );
         var items_loaded = await page.evaluate(allItems => allItems.length, allItems );
         // var items_loaded = await page.$$eval(all_items_selector, (items) => items.length);   // the number or items loaded after a click
         // items_loaded = items_loaded - 3;
         var total_items_loaded = items_loaded;   // await page.$$eval(all_items_selector, (items) => items.length);   // the number or items loaded variable of the total number of items currenly present
 console.log(total_items_loaded);
-        const page_total = 10;        // the last pages if next button exixts
+        const page_total = 1000;        // the last pages if next button exixts
         const page_first =  0;         // first page to start crawling with
-        const page_last = page_total; // page_total -1;   // the last page to scrap
+        const page_last  = page_total; // page_total -1;   // the last page to scrap
         // var page_counter = 0;
 
         const item_first = 0;           // first item to start crawling with
-        const item_last = 1; // items_loaded - 1;  // last item to stop crawling for a page
+        const item_last = items_loaded - 1;  // last item to stop crawling for a page
 
         var page_current = 0;
         var retry01 = 0;
@@ -194,6 +194,7 @@ console.log('total_items_loaded: ' + total_items_loaded );
                 var dataObj = {};
 
 				// get a mail's data
+				allItemsX = "//div[ @role = 'main']//tr/td[5]"; // diffenrent from the declarative one
                 return new Promise( async (resolve, reject) => {
                     
 					// wait all Inbox buttons be displayed
