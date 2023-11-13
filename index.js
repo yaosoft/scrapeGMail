@@ -87,9 +87,9 @@ catch(e){
 
 // Click to List all messages
 const moreBtnX = "//span[contains( @role, 'button' )]/span[ contains( .,'More' )]/..";
-// const allMailX = "//a[contains(., 'All Mail' )]";
+const allMailX = "//a[contains(., 'All Mail' )]";
 const allItemsX = "((//td//div[ contains( @title, 'Inbox' ) ])[5]//div[ contains( ., 'Inbox' )])[2]//ancestor::table[1]//tr//td[5]/div[2]";
-// const allItemsX = "//div[ @role = 'main']//tr/td[5]";
+
 var count_items_loaded 	= 0;
 try{
 	// click More btn
