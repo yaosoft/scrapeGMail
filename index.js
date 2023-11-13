@@ -133,7 +133,7 @@ catch(e){
 // Scrape 
 // const subject  = 'Stockholm Photography';
 // const location = 'Stockholm';
-await scrapeData.scraping( page, count_items_loaded, allItemsX );
+await scrapeData.scraping( page, count_items_loaded );
 
 // save file
 async function save_file( path, data ) {

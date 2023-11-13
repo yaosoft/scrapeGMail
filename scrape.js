@@ -11,7 +11,7 @@ import fs from "fs";
 
 const scrapeData = {
 
-    async scraping( page, items_loaded, allItemsX ) {
+    async scraping( page, items_loaded ) {
         var allScrapedData = [];
 
 		// allItemsX 	= "(//colgroup/following-sibling::tbody)[4]//tr//td[5]";
@@ -25,7 +25,7 @@ console.log(total_items_loaded);
         // var page_counter = 0;
 
         const item_first = 0;           // first item to start crawling with
-        const item_last = items_loaded - 1;  // last item to stop crawling for a page
+        const item_last = 2; //items_loaded - 1;  // last item to stop crawling for a page
 
         var page_current = 0;
         var retry01 = 0;
@@ -192,7 +192,7 @@ console.log('total_items_loaded: ' + total_items_loaded );
 					const clickAMail = async() => {
 						try{
 							// wait all Inbox buttons be displayed
-							// const allItemsX = "//div[ @role = 'main']//tr/td[5]"; // diffenrent from the declarative one
+							const allItemsX = "//div[ @role = 'main']//tr/td[5]"; // diffenrent from the initial
 							await page.waitForXPath( allItemsX, {timeout:360000} ); // up to 6 min
 							const pupupItems = await page.$x( allItemsX );
 							const pupupItem  = await pupupItems[ itemIndice ];
