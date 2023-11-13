@@ -11,7 +11,7 @@ import fs from "fs";
 
 const scrapeData = {
 
-    async scraping( page, items_loaded ) {
+    async scraping( page, items_loaded, allItemsX ) {
         var allScrapedData = [];
 
 
@@ -98,7 +98,7 @@ console.log(total_items_loaded);
                         // await page.evaluate( button => button.click(), elem[0] );
 						await elems[0].hover();
 						await elems[0].click();
-						await new Promise(r => setTimeout(r, 5000)); // loading left zone items
+						await new Promise(r => setTimeout(r, 8000)); // loading left zone items
                         // await new Promise(r => setTimeout(r, 20000));
 console.log('> Next page clicked: ' )
                     }
@@ -129,6 +129,8 @@ console.log('> Next page clicked: ' )
             }
 // Don't change here
 // console.log('comparator: ' + comparator + ', startSkiping: ' + startSkiping + ', page_first: ' + page_first + ', page_current: ' + page_current)
+			// const allItemsX = "//div[.='Inbox'] //ancestor::td[1]";
+			// const allItemsX = "//div[.='Inbox'] //ancestor::td[1]";
             for (var j = startSkiping; j < comparator; j++) { // click loop
                 
                 const next = await clickNext(); 
@@ -137,7 +139,7 @@ console.log('> Next page clicked: ' )
 
                 await page.waitForXPath( allItemsX, {timeout:120000} );
                 
-                allItems = await page.$x(allItemsX);
+                const allItems = await page.$x(allItemsX);
                 total_items_loaded = await page.evaluate(allItems => allItems.length, allItems);
 				
 //	total_items_loaded
@@ -186,11 +188,11 @@ console.log('total_items_loaded: ' + total_items_loaded );
                 return new Promise( async (resolve, reject) => {
                     
 					var clickAMailRetry = 0;
-					const clickAMailMaxRetry = 3;
+					const clickAMailMaxRetry = 5;
 					const clickAMail = async() => {
 						try{
 							// wait all Inbox buttons be displayed
-							const allItemsX = "//div[ @role = 'main']//tr/td[5]"; // diffenrent from the declarative one
+							// const allItemsX = "//div[ @role = 'main']//tr/td[5]"; // diffenrent from the declarative one
 							await page.waitForXPath( allItemsX, {timeout:360000} ); // up to 6 min
 							const pupupItems = await page.$x( allItemsX );
 							const pupupItem  = await pupupItems[ itemIndice ];
@@ -201,13 +203,17 @@ console.log('total_items_loaded: ' + total_items_loaded );
 						}
 						catch( err ){
 							if( clickAMailRetry <= 3 ){
+								
+console.log( 'clickAMail Error' );
+console.log( err.message );
 console.log( 'clickAMail retry n° ' + clickAMailRetry + '/' + clickAMailMaxRetry );
+
+								clickAMailRetry++;
 								await clickAMail();
 							}
 							else{
 								reject( dataObj ); // 
 							}
-							clickAMailRetry++;
 						}
 					}
 					await clickAMail();

@@ -88,7 +88,7 @@ catch(e){
 // Click to List all messages
 const moreBtnX = "//span[contains( @role, 'button' )]/span[ contains( .,'More' )]/..";
 const allMailX = "//a[contains(., 'All Mail' )]";
-var items_loaded 	= 0;
+var count_items_loaded 	= 0;
 try{
 	// click More btn
 	await page.waitForXPath( moreBtnX, {timeout:300000} );
@@ -106,14 +106,14 @@ console.log( 'More btn clicked' );
 console.log( 'All Mail btn clicked. Loading data... ' );
 	
 	// load data
-	const allItemsX 	= "//div[.='Inbox'] //ancestor::td[1]";
+	const allItemsX 	= "(//colgroup/following-sibling::tbody)[4]//tr//td[5]  ";
 	var countCountLoadedDataRetry 		= 0;
 	const countCountLoadedDataMaxRetry 	= 3; 
 	const countLoadedData = async() => {
 		try{
 			await page.waitForXPath( allItemsX, {timeout:360000} ); // up to 6 min
 			var allItems = await page.$x( allItemsX );
-			items_loaded = await page.evaluate(allItems => allItems.length, allItems );
+			count_items_loaded = await page.evaluate(allItems => allItems.length, allItems );
 		}
 		catch( err ){
 			if( countCountLoadedDataRetry <= countCountLoadedDataMaxRetry ){ // retry
@@ -121,8 +121,6 @@ console.log( 'countLoadedData retry n° ' + countCountLoadedDataRetry + '/' + co
 				countCountLoadedDataRetry++;
 				await countLoadedData();
 			}
-				
-			countCountLoadedDataRetry ++;
 		}
 	}
 	await countLoadedData();
@@ -135,7 +133,7 @@ catch(e){
 // Scrape 
 // const subject  = 'Stockholm Photography';
 // const location = 'Stockholm';
-await scrapeData.scraping( page, items_loaded );
+await scrapeData.scraping( page, count_items_loaded, allItemsX );
 
 // save file
 async function save_file( path, data ) {
