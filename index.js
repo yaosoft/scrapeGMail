@@ -106,9 +106,8 @@ console.log( 'More btn clicked' );
 console.log( 'All Mail btn clicked. Loading data... ' );
 	
 	// load data
-	const allItemsX 	= "((//td//div[ contains( @title, 'Inbox' ) ])[4]//div[ contains( ., 'Inbox' )])[2]//ancestor::table[1]//tr";
-	// const allItemsX 	= "(//colgroup/following-sibling::tbody)[4]//tr//td[5]";	
-	(//div[@class='AO']//table)[5]//tr//td[5]
+	const allItemsX = "((//td//div[ contains( @title, 'Inbox' ) ])[4]//div[ contains( ., 'Inbox' )])[2]//ancestor::table[1]//tr";
+
 	var countCountLoadedDataRetry 		= 0;
 	const countCountLoadedDataMaxRetry 	= 3; 
 	const countLoadedData = async() => {
