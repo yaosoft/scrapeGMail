@@ -98,7 +98,7 @@ console.log(total_items_loaded);
                         // await page.evaluate( button => button.click(), elem[0] );
 						await elems[0].hover();
 						await elems[0].click();
-						await new Promise(r => setTimeout(r, 8000)); // loading left zone items
+						await new Promise(r => setTimeout(r, 10000)); // loading left zone items
                         // await new Promise(r => setTimeout(r, 20000));
 console.log('> Next page clicked: ' )
                     }
@@ -202,7 +202,7 @@ console.log('total_items_loaded: ' + total_items_loaded );
 							await pupupItem.click();
 						}
 						catch( err ){
-							if( clickAMailRetry <= 3 ){
+							if( clickAMailRetry <= clickAMailMaxRetry ){
 								
 console.log( 'clickAMail Error' );
 console.log( err.message );
@@ -299,7 +299,6 @@ console.log( 'clickAMail retry n° ' + clickAMailRetry + '/' + clickAMailMaxRetr
                     
                 })
             }
-
 
             // helper to heck if an objct is empty
             function isEmptyObject(obj) {
