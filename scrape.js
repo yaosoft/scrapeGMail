@@ -14,7 +14,7 @@ const scrapeData = {
     async scraping( page, items_loaded ) {
         var allScrapedData = [];
 
-		const allItemsX = "//a[contains(., 'All Mail' )]";  // Not the initial
+		const allItemsX = "//div[ @role = 'main']//tr/td[5]";  // Not the initial
         // var items_loaded = await page.$$eval(all_items_selector, (items) => items.length);   // the number or items loaded after a click
         // items_loaded = items_loaded - 3;
         var total_items_loaded = items_loaded;   // await page.$$eval(all_items_selector, (items) => items.length);   // the number or items loaded variable of the total number of items currenly present
